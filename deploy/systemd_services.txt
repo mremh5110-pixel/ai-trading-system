@@ -1,0 +1,38 @@
+# ضعهما في /etc/systemd/system/ على أي VPS لينكس (Ubuntu مثلًا)
+# ثم: sudo systemctl daemon-reload && sudo systemctl enable --now trading-engine trading-dashboard
+
+# ---------------------------------------------------------------------------
+# /etc/systemd/system/trading-engine.service
+# ---------------------------------------------------------------------------
+[Unit]
+Description=AI Trading Analysis Engine
+After=network.target
+
+[Service]
+Type=simple
+User=trading
+WorkingDirectory=/opt/ai_trading_system
+ExecStart=/opt/ai_trading_system/venv/bin/python main.py --mode demo --loop --interval 30
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
+
+# ---------------------------------------------------------------------------
+# /etc/systemd/system/trading-dashboard.service
+# ---------------------------------------------------------------------------
+[Unit]
+Description=AI Trading Dashboard (Streamlit)
+After=network.target
+
+[Service]
+Type=simple
+User=trading
+WorkingDirectory=/opt/ai_trading_system
+ExecStart=/opt/ai_trading_system/venv/bin/streamlit run dashboard/app.py --server.port=8501 --server.address=0.0.0.0
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

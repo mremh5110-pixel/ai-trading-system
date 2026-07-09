@@ -1,0 +1,15 @@
+# صورة منفصلة وأخف للوحة فقط - هذا ما يُنشر على Cloud Run (سيرفرلس، يتوسّع
+# تلقائيًا حسب عدد الزوار، ويتوقف عن الفوترة تمامًا لو محدش بيستخدمه).
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY requirements.txt requirements-gcp.txt ./
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-gcp.txt
+
+COPY . .
+
+ENV STORE_BACKEND=firestore
+EXPOSE 8080
+
+CMD streamlit run dashboard/app.py --server.port=8080 --server.address=0.0.0.0 --server.headless=true
